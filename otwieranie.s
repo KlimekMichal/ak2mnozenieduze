@@ -15,7 +15,7 @@
     f_in1: .ascii "in1\0"
     f_in2: .ascii "in2\0"
     f_out: .ascii "out\0"
-
+	eol: .ascii "\n"
 .bss
     .comm num1_buf, 1024
     .comm num1, 1024
@@ -30,24 +30,6 @@
     .globl _start
     _start:
 
-    num1_file:              # %r14 - number of num1 bytes
-        movq $SYSOPEN, %rax
-        movq $f_in1, %rdi
-        movq $O_RDONLY, %rsi
-        movq $0666, %rdx
-        syscall
-
-        movq %rax, %rdi  # file handle
-        movq $SYSREAD, %rax
-        movq $num1_buf, %rsi
-        movq $BUFLEN, %rdx
-        syscall
-
-        movq %rax, %r14  
-        sub $3, %r14       # taking 2 bytes at a time
-
-        movq $SYSCLOSE, %rax    # file handle still in %rdi
-        syscall
     num2_file:              # %r15 - number of num1 bytes
         movq $SYSOPEN, %rax
         movq $f_in2, %rdi
@@ -66,6 +48,7 @@
 
         movq $SYSCLOSE, %rax
 		syscall
+kappa:
 mov $0, %rax
 mov $0, %r10
 mov $0, %r11
@@ -113,9 +96,38 @@ wypisywanie:
 movq $SYSWRITE, %rax
 movq $STDOUT, %rdi
 movq $sum_out2, %rsi
-mov %rcx, %rdx
+mov $1024, %rdx
 syscall
 
+movq $SYSWRITE, %rax
+movq $STDOUT, %rdi
+movq $eol, %rsi
+mov $2, %rdx
+syscall
+
+cmp $1, %r12
+je koniec
+num1_file:              # %r14 - number of num1 bytes
+        movq $SYSOPEN, %rax
+        movq $f_in1, %rdi
+        movq $O_RDONLY, %rsi
+        movq $0666, %rdx
+        syscall
+
+        movq %rax, %rdi  # file handle
+        movq $SYSREAD, %rax
+        movq $num2_buf, %rsi
+        movq $BUFLEN, %rdx
+        syscall
+
+        movq %rax, %r14  
+        sub $3, %r14       # taking 2 bytes at a time
+
+        movq $SYSCLOSE, %rax    # file handle still in %rdi
+        syscall
+		mov $1 , %r12
+		jmp kappa
+koniec:
 movq $SYSEXIT, %rax
     movq $EXIT_SUCCESS, %rdi
 syscall
