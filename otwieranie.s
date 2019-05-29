@@ -30,33 +30,49 @@
     .globl _start
     _start:
 
-    num2_file:              # %r15 - number of num1 bytes
+mov $0, %r12
+
+    num1_file:              # %r15 - number of num1 bytes
         movq $SYSOPEN, %rax
-        movq $f_in2, %rdi
         movq $O_RDONLY, %rsi
         movq $0666, %rdx
+        movq $f_in1, %rdi
+	cmp $0, %r12
+	je open_file_1
+
+	open_file_2:
+	mov $f_in2, %rdi
+
+	open_file_1:
         syscall
 
         movq %rax, %rdi
         movq $SYSREAD, %rax
-        movq $num2_buf, %rsi
         movq $BUFLEN, %rdx
+        movq $num1_buf, %rsi
+	cmp $0, %r12
+	je read_file_1
+
+	read_file_2:
+	mov $num2_buf, %rsi
+
+	read_file_1:
         syscall
 
         movq %rax, %r15  
         sub $3, %r15
-
         movq $SYSCLOSE, %rax
 		syscall
+
+mov $sum_out1, %rdi
+mov $num1_buf, %rsi
+
 kappa:
 mov $0, %rax
 mov $0, %r10
 mov $0, %r11
 mov $0, %rdx
 mov $0, %rcx
-mov $0, %rsi
-mov $sum_out2, %rdi
-mov $num2_buf, %rsi
 mov $2, %bl
 jedna_seria_dzielenia:
 mov $0, %rdx
