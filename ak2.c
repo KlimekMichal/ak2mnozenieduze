@@ -33,7 +33,7 @@ int main(int argc, const char* argv[]){
 	srand(seed);
 char choice = 1;
 	printf("1. Uruchom program\n"
-		"2. Generuj losowe dane\n"
+//		"2. Generuj losowe dane\n"
 			"0. Wyjscie\n");
 
 
@@ -43,9 +43,11 @@ char choice = 1;
 			case '1':
 				multiplication();
 				break;
+/*				
 			case '2':
 				generate_random_file("in1_binary");
 				generate_random_file("in2_binary");
+*/
 			default:
 				break;
 		}

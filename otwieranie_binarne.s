@@ -27,7 +27,7 @@
 .text
 
 .global multiplication
-.type multupliatoin, @function
+.type multiplication, @function
 
 multiplication:
 

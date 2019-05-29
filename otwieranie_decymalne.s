@@ -27,9 +27,10 @@
     .comm sum_out2, 1024
 
 .text
-    .globl _start
-    _start:
+.global multiplication
+.type multiplication, @function
 
+multiplication:
 mov $0, %r12
 
 read_file:
