@@ -257,11 +257,25 @@ reverse:
 	cmp %r8, %rcx
 	jl reverse
 
+count_leading_zeroes:
+	mov $0, %rax
+	leading_zeroes:
+		mov product(, %rax, 1), %bl
+		cmp $'1', %bl
+		je print_product
+		inc %rax
+		jmp leading_zeroes
+		
+
 print_product:
+	mov %rax, %r8
+
 	movq $SYSWRITE, %rax
 	movq $STDOUT, %rdi
 	mov $2048, %rdx
+	sub %r8, %rdx
 	movq $product, %rsi
+	add %r8, %rsi
 	syscall	
 
 	movq $SYSWRITE, %rax
