@@ -131,30 +131,6 @@ to_binary:
 	je wypisywanie
 	jmp jedna_seria_dzielenia
 	
-reverse_preparation:
-	mov $0, %rdx
-	mov $2, %rcx
-	mov $BUFLEN, %rax
-	div %rcx
-	mov %rax, %r8
-	mov $0, %rcx
-	mov $BUFLEN, %rdx
-	dec %rdx
-
-reverse:
-	mov (%rdi, %rcx, 1), %al
-	mov (%rdi, %rdx, 1), %bl
-	mov %bl, (%rdi, %rcx, 1)
-	mov %al, (%rdi, %rdx, 1)
-
-	inc %rcx
-	dec %rdx
-	cmp %r8, %rcx
-	jl reverse
-
-	
-
-
 
 wypisywanie:
 	movq $SYSWRITE, %rax
@@ -218,7 +194,7 @@ mul_preparations:
 
 mul_algorithm:
 	cmp $1024, %r9
-	je koniec
+	je number_to_ascii_preparation
 
 	mov sum_out2(, %r9, 1), %al
 	cmp $0, %al
@@ -249,6 +225,50 @@ mul_algorithm:
 		mov $0, %r10
 		jmp mul_algorithm
 
+
+number_to_ascii_preparation:
+	mov $0, %rax
+number_to_ascii:
+	mov product(, %rax, 1), %bl
+	add $0x30, %bl
+	mov %bl, product(, %rax, 1)
+	inc %rax
+	cmp $2048, %rax
+	jne number_to_ascii
+
+reverse_preparation:
+	mov $0, %rdx
+	mov $2, %rcx
+	mov $2048, %rax
+	div %rcx
+	mov %rax, %r8
+	mov $0, %rcx
+	mov $2048, %rdx
+	dec %rdx
+
+reverse:
+	mov product(, %rcx, 1), %al
+	mov product(, %rdx, 1), %bl
+	mov %bl, product(, %rcx, 1)
+	mov %al, product(, %rdx, 1)
+
+	inc %rcx
+	dec %rdx
+	cmp %r8, %rcx
+	jl reverse
+
+print_product:
+	movq $SYSWRITE, %rax
+	movq $STDOUT, %rdi
+	mov $2048, %rdx
+	movq $product, %rsi
+	syscall	
+
+	movq $SYSWRITE, %rax
+	movq $STDOUT, %rdi
+	movq $eol, %rsi
+	mov $2, %rdx
+	syscall
 
 koniec:
 	movq $SYSEXIT, %rax
