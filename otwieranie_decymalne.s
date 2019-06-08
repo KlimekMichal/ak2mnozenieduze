@@ -25,6 +25,7 @@
     .comm sum_out1, 1024
     .comm sum_buf2, 1024
     .comm sum_out2, 1024
+    .comm result, 2048
 
 .text
 .global multiplication
@@ -127,7 +128,7 @@ to_binary:
 	jne jedna_seria_dzielenia
 	mov (%rsi, %r10,1), %al
 	cmp $46, %al
-	je reverse_preparation
+	je wypisywanie
 	jmp jedna_seria_dzielenia
 	
 reverse_preparation:
@@ -150,6 +151,8 @@ reverse:
 	dec %rdx
 	cmp %r8, %rcx
 	jl reverse
+
+	
 
 
 
@@ -174,11 +177,62 @@ wypisywanie:
 	syscall
 
 cmp $1, %r12
-je koniec
+je ascii_to_number
 mov $1, %r12
 mov $sum_out1, %rdi
 mov $num1_buf, %rsi
 jmp read_file
+
+
+ascii_to_number:
+	mov $0, %rax
+
+	sum_out1_to_number:
+	mov sum_out1(, %rax, 1), %bl
+	cmp $0, %bl
+	je sum_out2_to_number_prepare
+	sub $0x30, %bl
+	mov %bl, sum_out1(, %rax, 1)
+	inc %rax
+	jmp sum_out1_to_number
+
+	sum_out2_to_number_prepare:
+	mov $0, %rax
+
+	sum_out2_to_number:
+	mov sum_out2(, %rax, 1), %bl
+	cmp $0, %bl
+	je mul_preparations
+	sub $0x30, %bl
+	mov %bl, sum_out2(, %rax, 1)
+	inc %rax
+	jmp sum_out2_to_number
+
+
+mul_preparations:
+	mov $0, %r8					# sum_out1 index
+	mov $0, %r9					# sum_out2 index
+
+
+mul_algorithm:
+	mov sum_out2(, %r9, 1), %al
+	cmp $0, %al
+	je found_0
+	cmp $1, %al
+	je found_1
+	jmp found_end
+
+	found_0:
+		inc %r9
+		jmp mul_algorithm
+	
+	found_1:
+	
+	found_end:
+	jmp koniec
+	
+
+
 
 koniec:
 	movq $SYSEXIT, %rax
