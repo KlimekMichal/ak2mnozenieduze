@@ -17,6 +17,7 @@
     f_out: .ascii "out\0"
 	eol: .ascii "\n"
 .bss
+    .comm product, 2048
     .comm num1_buf, 1024
     .comm num1, 1024
     .comm num2_buf, 1024
@@ -25,7 +26,6 @@
     .comm sum_out1, 1024
     .comm sum_buf2, 1024
     .comm sum_out2, 1024
-    .comm result, 2048
 
 .text
 .global multiplication
@@ -212,26 +212,42 @@ ascii_to_number:
 mul_preparations:
 	mov $0, %r8					# sum_out1 index
 	mov $0, %r9					# sum_out2 index
+	mov $0, %r10				# carry
+	mov $2, %r11				# base
 
 
 mul_algorithm:
+	cmp $1024, %r9
+	je koniec
+
 	mov sum_out2(, %r9, 1), %al
 	cmp $0, %al
 	je found_0
-	cmp $1, %al
-	je found_1
-	jmp found_end
+	jmp found_1
 
 	found_0:
 		inc %r9
 		jmp mul_algorithm
 	
 	found_1:
-	
-	found_end:
-	jmp koniec
-	
-
+		mov $0, %r8
+		iterate:
+			mov $0, %rdx
+			mov $0, %rax
+			mov sum_out1(, %r8, 1), %al
+			mov product(%r9, %r8, 1), %bl
+			add %bl, %al
+			add %r10, %rax
+			div %r11
+			mov %rax, %r10
+			mov %dl, product(%r9, %r8, 1)
+			inc %r8
+			cmp $1024, %r8
+			jl iterate
+		
+		inc %r9
+		mov $0, %r10
+		jmp mul_algorithm
 
 
 koniec:
