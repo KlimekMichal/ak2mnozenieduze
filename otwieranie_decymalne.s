@@ -32,6 +32,16 @@
 .type multiplication, @function
 
 multiplication:
+
+mov $0, %rax
+mov $0, %bl
+clear_product:
+	mov %bl, product(, %rax, 1) 
+	inc %rax
+	cmp $2048, %rax
+	jne clear_product
+
+
 mov $0, %r12
 
 read_file:
@@ -285,6 +295,8 @@ print_product:
 	syscall
 
 koniec:
+ret
+/*
 	movq $SYSEXIT, %rax
 	movq $EXIT_SUCCESS, %rdi
 	syscall
@@ -300,3 +312,4 @@ koniec:
 	movq $sum_out1, %rsi
 	movq $4, %rdx
 	syscall
+*/

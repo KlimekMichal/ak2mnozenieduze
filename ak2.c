@@ -65,13 +65,17 @@ int* readFile(char* fileName)
 
 
 int main(int argc, const char* argv[]) {
-	char choice = 1;
+	char choice = '1';
+	int* binary_file1;
+	int* binary_file2;
 	do {
 	printf("\n1. Uruchom program asm\n"
 			"2. Uruchom program c\n"
+			"3. Wczytaj plik (dla programu c)\n"
 			"0. Wyjscie\n");
 
-	scanf("%c", &choice);
+	fflush(stdin);
+	choice = getchar();
 
 		switch(choice) {
 			case '1': {
@@ -80,20 +84,24 @@ int main(int argc, const char* argv[]) {
 			}
 
 			case '2': {
-				int* binary_file1 = readFile("in2_binary");
-				int* binary_file2 = readFile("in1_binary");
 //				printfdd("\nw%ld\n pierwszy: %d\n", sizeof(binary_file2), binary_file2[0]);
-				int* result = multiply(binary_file1,binary_file2);
-
+				int* result = multiply(binary_file1, binary_file2);
 				printf("wynik: ");
 				for (int k = 0 ; k < size * 2; ++k) {
 					printf("%d", result[k]);
 				}
 				printf("\n");
+				free(result);
 
 				break;
 			}
 
+			case '3': {
+				binary_file1 = readFile("in2_binary");
+				binary_file2 = readFile("in1_binary");
+				
+				break;
+		  		}
 			default:
 				break;
 		}
