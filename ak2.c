@@ -74,8 +74,8 @@ int main(int argc, const char* argv[]) {
 			"3. Wczytaj plik (dla programu c)\n"
 			"0. Wyjscie\n");
 
-	fflush(stdin);
 	choice = getchar();
+	getchar();
 
 		switch(choice) {
 			case '1': {
