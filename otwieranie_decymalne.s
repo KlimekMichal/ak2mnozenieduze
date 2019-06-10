@@ -10,12 +10,16 @@
     O_WRONLY = 01
     O_WR_CRT_TRNC = 01101
 
+    format_d: .asciz "%d"
+    newline: .asciz "\n"
+
     BUFLEN = 1024
 
     f_in1: .ascii "in1\0"
     f_in2: .ascii "in2\0"
     f_out: .ascii "out\0"
 	eol: .ascii "\n"
+
 .bss
     .comm product, 2048
     .comm num1_buf, 1024
@@ -26,6 +30,7 @@
     .comm sum_out1, 1024
     .comm sum_buf2, 1024
     .comm sum_out2, 1024
+	.comm time, 8
 
 .text
 .global multiplication
@@ -188,11 +193,20 @@ ascii_to_number:
 	sum_out2_to_number:
 	mov sum_out2(, %rax, 1), %bl
 	cmp $0, %bl
-	je mul_preparations
+	je time_before
 	sub $0x30, %bl
 	mov %bl, sum_out2(, %rax, 1)
 	inc %rax
 	jmp sum_out2_to_number
+
+time_before:
+	mov $0, %rdx
+	mov $0, %rax
+	mov $0, %r13
+	rdtsc
+	mov %rdx, %r13
+	shl $32, %r13
+	add %rax, %r13
 
 
 mul_preparations:
@@ -204,7 +218,7 @@ mul_preparations:
 
 mul_algorithm:
 	cmp $1024, %r9
-	je number_to_ascii_preparation
+	je time_after
 
 	mov sum_out2(, %r9, 1), %al
 	cmp $0, %al
@@ -234,6 +248,24 @@ mul_algorithm:
 		inc %r9
 		mov $0, %r10
 		jmp mul_algorithm
+
+
+time_after:
+	mov $0, %rax
+	mov $0, %rdx
+	rdtsc
+	shl $32, %rdx
+	add %rax, %rdx
+	sub %r13, %rdx
+	mov %rdx, time
+	mov $0, %rax
+	mov $format_d, %rdi
+	mov time, %rsi
+	call printf
+
+	mov $0, %rax
+	mov $newline, %rdi
+	call printf
 
 
 number_to_ascii_preparation:

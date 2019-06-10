@@ -3,6 +3,7 @@
 #include <time.h>
 
 extern void multiplication();
+extern int get_clock();
 
 int size = 0;
 int reading_counter = 0;
@@ -104,12 +105,16 @@ int* readFile(char* fileName)
 
 
 int main(int argc, const char* argv[]) {
+	for(int i = 0; i < 1000; i++){
+	int clock = get_clock();
+	printf("clock: %d\n", clock);
+	}
 	char choice = '1';
 	int* binary_file1;
 	int* binary_file2;
 	int ile_bitow=0;
 	int ile_razy=0;
-	srand(time(0));
+//	srand(time(0));
 	do {
 	printf("\n1. Uruchom program asm\n"
 			"2. Uruchom program c\n"
