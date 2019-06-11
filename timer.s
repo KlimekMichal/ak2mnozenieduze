@@ -7,4 +7,6 @@ get_clock:
 	rdtsc
 	shl $32, %rdx
 	add %rax, %rdx
+
+	mov %r10, %rdx 
 	ret

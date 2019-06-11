@@ -13,7 +13,7 @@
     format_d: .asciz "%d"
     newline: .asciz "\n"
 
-    BUFLEN = 1024
+    BUFLEN = 10240
 
     f_in1: .ascii "in1\0"
     f_in2: .ascii "in2\0"
@@ -21,15 +21,15 @@
 	eol: .ascii "\n"
 
 .bss
-    .comm product, 2048
-    .comm num1_buf, 1024
-    .comm num1, 1024
-    .comm num2_buf, 1024
-    .comm num2, 1024
-    .comm sum_buf1, 1024
-    .comm sum_out1, 1024
-    .comm sum_buf2, 1024
-    .comm sum_out2, 1024
+    .comm product, 20480
+    .comm num1_buf, 10240
+    .comm num1, 10240
+    .comm num2_buf, 10240
+    .comm num2, 10240
+    .comm sum_buf1, 10240
+    .comm sum_out1, 10240
+    .comm sum_buf2, 10240
+    .comm sum_out2, 10240
 	.comm time, 8
 
 .text
@@ -43,7 +43,7 @@ mov $0, %bl
 clear_product:
 	mov %bl, product(, %rax, 1) 
 	inc %rax
-	cmp $2048, %rax
+	cmp $20480, %rax
 	jne clear_product
 
 
@@ -217,7 +217,7 @@ mul_preparations:
 
 
 mul_algorithm:
-	cmp $1024, %r9
+	cmp $10240, %r9
 	je time_after
 
 	mov sum_out2(, %r9, 1), %al
@@ -242,7 +242,7 @@ mul_algorithm:
 			mov %rax, %r10
 			mov %dl, product(%r9, %r8, 1)
 			inc %r8
-			cmp $1024, %r8
+			cmp $10240, %r8
 			jl iterate
 		
 		inc %r9
@@ -275,17 +275,17 @@ number_to_ascii:
 	add $0x30, %bl
 	mov %bl, product(, %rax, 1)
 	inc %rax
-	cmp $2048, %rax
+	cmp $20480, %rax
 	jne number_to_ascii
 
 reverse_preparation:
 	mov $0, %rdx
 	mov $2, %rcx
-	mov $2048, %rax
+	mov $20480, %rax
 	div %rcx
 	mov %rax, %r8
 	mov $0, %rcx
-	mov $2048, %rdx
+	mov $20480, %rdx
 	dec %rdx
 
 reverse:
@@ -314,7 +314,7 @@ print_product:
 
 	movq $SYSWRITE, %rax
 	movq $STDOUT, %rdi
-	mov $2048, %rdx
+	mov $20480, %rdx
 	sub %r8, %rdx
 	movq $product, %rsi
 	add %r8, %rsi

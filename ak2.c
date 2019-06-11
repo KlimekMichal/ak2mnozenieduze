@@ -64,11 +64,10 @@ int multiply(int num1[], int num2[]) {
 			}
 		}
     }
-	printf("wynik: ");
-	for (int k = 0 ; k < size * 2; ++k) {
-		printf("%d", bit_result[k]);
-	}
-	printf("\n");
+	//printf("wynik: ");
+	//for (int k = 0 ; k < size * 2; ++k) {
+		//printf("%d", bit_result[k]);
+	//}
 	if(bit_result = NULL)
 	{
 		return 0;
@@ -105,10 +104,6 @@ int* readFile(char* fileName)
 
 
 int main(int argc, const char* argv[]) {
-	for(int i = 0; i < 1000; i++){
-	int clock = get_clock();
-	printf("clock: %d\n", clock);
-	}
 	char choice = '1';
 	int* binary_file1;
 	int* binary_file2;
@@ -157,9 +152,9 @@ int main(int argc, const char* argv[]) {
 					create_random("in2_binary",ile_bitow);
 					binary_file1 = readFile("in2_binary");
 					binary_file2 = readFile("in1_binary");
-					start();
+					int clock = get_clock();
 					int result = multiply(binary_file1, binary_file2);
-					wyniki[i]=stop();
+					wyniki[i]=get_clock() - clock;
 					printf("%d\n", wyniki[i]);
 				}
 				break;
