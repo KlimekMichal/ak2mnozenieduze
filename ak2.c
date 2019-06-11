@@ -64,10 +64,10 @@ int multiply(int num1[], int num2[]) {
 			}
 		}
     }
-	//printf("wynik: ");
-	//for (int k = 0 ; k < size * 2; ++k) {
-		//printf("%d", bit_result[k]);
-	//}
+	printf("wynik: ");
+	for (int k = 0 ; k < size * 2; ++k) {
+		printf("%d", bit_result[k]);
+	}
 	printf("\n");
 	if(bit_result = NULL)
 	{
